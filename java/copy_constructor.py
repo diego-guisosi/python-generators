@@ -4,18 +4,28 @@ import sys
 
 def extract_setters(file):
 
+    """
+    Extract setters from the provided file
+
+    :param file: Path to the class whose setters must be extracted
+    :return: iterable containing all setters extracted from the provided file
+    """
     with open(file, mode="rt") as f:
-        setters = [line.strip().split(sep='(')[0].replace("public void ", "")
-                   for line in f.readlines() if "public void set" in line]
-        return setters
+        return [line.strip().split(sep='(')[0].replace("public void ", "")
+                for line in f.readlines() if "public void set" in line]
 
 
 def main(file):
 
+    """
+    Generate getters based on the setters extracted from file and prints the body of the copy constructor
+
+    :param file: Path to the class whose copy constructor body must me generated
+    """
     setters = extract_setters(file)
     for setter in setters:
         getter = setter.replace("set", "get")
-        print("this.{set}(other.{get}())".format(set=setter, get=getter))
+        print("this.{set}(other.{get}());".format(set=setter, get=getter))
 
 
 if __name__ == '__main__':
@@ -25,6 +35,3 @@ if __name__ == '__main__':
         sys.exit(1)
 
     main(sys.argv[1])
-
-
-# ~/workspace/sts-3.9.2.RELEASE/classes/src/classes/
